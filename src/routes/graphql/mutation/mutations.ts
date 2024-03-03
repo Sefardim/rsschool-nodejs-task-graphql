@@ -19,7 +19,7 @@ export const createPostMutation = {
         },
     },
     resolve: async (source: any, args: IPost, context: IContext) => {
-        return context.prisma.post.create({
+        return await context.prisma.post.create({
             data: args.dto
         });
     },
@@ -34,7 +34,7 @@ export const changePostMutation = {
         },
     },
     resolve: async (source: any, args: IChangePost, context: IContext) => {
-        return context.prisma.post.update({
+        return await context.prisma.post.update({
             where: {
                 id: args.id
             },
@@ -64,7 +64,7 @@ export const createUserMutation = {
         },
     },
     resolve: async (source: any, args: IUser, context: IContext) => {
-        return context.prisma.user.create({
+        return await context.prisma.user.create({
             data: args.dto
         });
     },
@@ -79,7 +79,7 @@ export const changeUserMutation = {
         },
     },
     resolve: async (source: any, args: IChangeUser, context: IContext) => {
-        return context.prisma.user.update({
+        return await context.prisma.user.update({
             where: {
                 id: args.id,
             },

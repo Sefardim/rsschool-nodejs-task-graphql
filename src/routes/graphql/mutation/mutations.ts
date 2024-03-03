@@ -1,20 +1,26 @@
+import { GraphQLNonNull } from 'graphql/index.js';
+
 import { UUIDType } from '../types/uuid.js';
 import { ChangePostType, CreatePostType, PostType } from '../types/post.js';
-import { ChangeUserType, CreateUserType, SubscribeToType, UserType } from '../types/user.js';
+import { ChangeUserType, CreateUserType, UserType } from '../types/user.js';
 import { CreateProfileType, ProfileType } from '../types/profile.js';
+import { IContext } from '../interface/context.interface.js';
+import { IChangeUser, ISubscribeTo, IUnsubscribeFrom, IUser } from '../interface/user.interface.js';
+import { IChangeProfile, IProfile } from '../interface/profile.interface.js';
+import { IChangePost, IPost } from '../interface/post.interface.js';
 
 
 
 export const createPostMutation = {
     type: PostType,
     args: {
-        data: {
-            type: CreatePostType,
+        dto: {
+            type: new GraphQLNonNull(CreatePostType),
         },
     },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        return context.fastify.db.posts.create({
-            data: args.data
+    resolve: async (source: any, args: IPost, context: IContext) => {
+        return context.prisma.post.create({
+            data: args.dto
         });
     },
 };
@@ -22,43 +28,44 @@ export const createPostMutation = {
 export const changePostMutation = {
     type: PostType,
     args: {
-        id: { type: UUIDType },
-        data: {
-            type: CreatePostType,
+        id: { type: new GraphQLNonNull(UUIDType) },
+        dto: {
+            type: new GraphQLNonNull(ChangePostType),
         },
     },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        return context.fastify.db.posts.update({
+    resolve: async (source: any, args: IChangePost, context: IContext) => {
+        return context.prisma.post.update({
             where: {
                 id: args.id
             },
-            data: args.data
+            data: args.dto
         });
     },
 };
 
 export const deletePostMutation = {
-    type: PostType,
-    args: { id: { type: UUIDType } },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        await context.fastify.db.posts.delete({
+    type: new GraphQLNonNull(UUIDType),
+    args: { id: { type: new GraphQLNonNull(UUIDType) } },
+    resolve: async (source: any, args: any, context: IContext) => {
+        await context.prisma.post.delete({
             where: {
                 id: args.id
             }
         });
+        return args.id;
     },
 };
 
 export const createUserMutation = {
     type: UserType,
     args: {
-        data: {
-            type: CreateUserType,
+        dto: {
+            type: new GraphQLNonNull(CreateUserType),
         },
     },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        return context.fastify.db.users.create({
-            data: args.data
+    resolve: async (source: any, args: IUser, context: IContext) => {
+        return context.prisma.user.create({
+            data: args.dto
         });
     },
 };
@@ -66,44 +73,44 @@ export const createUserMutation = {
 export const changeUserMutation = {
     type: UserType,
     args: {
-        id: { type: UUIDType },
-        data: {
-            type: ChangeUserType,
+        id: { type: new GraphQLNonNull(UUIDType) },
+        dto: {
+            type: new GraphQLNonNull(ChangeUserType),
         },
     },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        return context.fastify.db.users.update({
+    resolve: async (source: any, args: IChangeUser, context: IContext) => {
+        return context.prisma.user.update({
             where: {
                 id: args.id,
             },
-            data: args.data
+            data: args.dto
         });
     },
 };
 
 export const deleteUserMutation = {
-    type: UserType,
-    args: { id: { type: UUIDType } },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        await context.fastify.db.users.delete({
+    type: new GraphQLNonNull(UUIDType),
+    args: { id: { type: new GraphQLNonNull(UUIDType) } },
+    resolve: async (source: any, args: any, context: IContext) => {
+        await context.prisma.user.delete({
             where: {
                 id: args.id
             }
         });
-        return null;
+        return args.id;
     },
 };
 
 export const createProfileMutation = {
     type: ProfileType,
     args: {
-        data: {
-            type: CreateProfileType,
+        dto: {
+            type: new GraphQLNonNull(CreateProfileType),
         },
     },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        return context.fastify.db.profiles.create({
-            data: args.data
+    resolve: async (source: any, args: IProfile, context: IContext) => {
+        return context.prisma.profile.create({
+            data: args.dto
         });
     },
 };
@@ -111,61 +118,79 @@ export const createProfileMutation = {
 export const changeProfileMutation = {
     type: ProfileType,
     args: {
-        id: { type: UUIDType },
-        data: {
-            type: ChangePostType,
+        id: { type: new GraphQLNonNull(UUIDType) },
+        dto: {
+            type: new GraphQLNonNull(ChangePostType),
         },
     },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        return context.fastify.db.profiles.update({
+    resolve: async (source: any, args: IChangeProfile, context: IContext) => {
+        return context.prisma.profile.update({
             where: {
                 id: args.id
             },
-            data: args.data
+            data: args.dto
         });
     },
 };
 
 export const deleteProfileMutation = {
-    type: ProfileType,
-    args: { id: { type: UUIDType } },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        await context.fastify.db.profiles.delete({
+    type: new GraphQLNonNull(UUIDType),
+    args: { id: { type: new GraphQLNonNull(UUIDType) } },
+    resolve: async (source: any, args: any, context: IContext) => {
+        await context.prisma.profile.delete({
             where: {
                 id: args.id
             }
         });
+        return args.id;
     },
 }
 
 export const subscribeToMutation = {
     type: UserType,
     args: {
-        data: {
-            type: SubscribeToType,
+        userId: {
+            type: new GraphQLNonNull(UUIDType),
+        },
+        authorId: {
+            type: new GraphQLNonNull(UUIDType),
         },
     },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        return context.fastify.db.profiles.create({
-            data: args.data
+    resolve: async (source: any, args: ISubscribeTo, context: IContext) => {
+        return await context.prisma.user.update({
+            where: {
+                id: args.userId,
+            },
+            data: {
+                userSubscribedTo: {
+                    create: {
+                        authorId: args.authorId,
+                    },
+                },
+            },
         });
     },
 }
 
 export const unsubscribeFromMutation = {
-    type: UserType,
+    type: UUIDType,
     args: {
-        data: {
-            type: SubscribeToType,
+        userId: {
+            type: new GraphQLNonNull(UUIDType),
+        },
+        authorId: {
+            type: new GraphQLNonNull(UUIDType),
         },
     },
-    resolve: async (source: any, args: any, context: any, info: any) => {
-        await context.fastify.db.profiles.deleteMany({
+    resolve: async (source: any, args: IUnsubscribeFrom, context: IContext) => {
+        await context.prisma.subscribersOnAuthors.delete({
             where: {
-                userId: args.data.userId,
-                authorId: args.data.authorId,
-            },
+                subscriberId_authorId: {
+                    subscriberId: args.userId,
+                    authorId: args.authorId,
+                },
+            }
         });
-        return null;
+        return args.userId;
     },
 }

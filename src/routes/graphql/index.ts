@@ -5,6 +5,7 @@ import { GraphQLSchema, graphql, parse, validate } from 'graphql';
 import { createGqlResponseSchema, gqlResponseSchema } from './schemas.js';
 import { Query } from './query/query.js';
 import { Mutation } from './mutation/mutation.js';
+import { listOfLoaders } from './loader/loader.js';
 
 const graphqlDepthLimit = 5;
 
@@ -25,24 +26,25 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
         200: gqlResponseSchema,
       },
     },
-    async handler(req) {
+    async handler(req, reply) {
       const { query, variables } = req.body;
-      const err = validate(schemaApp, parse(query), [depthLimit(graphqlDepthLimit)]);
+      const errors = validate(schemaApp, parse(query), [depthLimit(graphqlDepthLimit)]);
 
-      if (err?.length > 0) {
-        return { data: '', errors: err };
+      if (errors?.length > 0) {
+        return reply.send({ errors });
       }
 
-      const { data, errors } = await graphql({
+      const loaders = listOfLoaders(prisma);
+
+      return await graphql({
         schema: schemaApp,
         source: query,
         variableValues: variables,
         contextValue: {
           prisma,
+          loaders
         },
       });
-
-      return { data, errors };
     },
   });
 };

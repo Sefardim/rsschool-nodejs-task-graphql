@@ -5,7 +5,7 @@ import {
     createPostMutation, createProfileMutation, createUserMutation,
     deletePostMutation, deleteProfileMutation,
     deleteUserMutation, subscribeToMutation, unsubscribeFromMutation
-} from "./mutations.js";
+} from './mutations.js';
 
 export const Mutation = new GraphQLObjectType({
     name: 'Mutation',
@@ -22,4 +22,4 @@ export const Mutation = new GraphQLObjectType({
         subscribeTo: subscribeToMutation,
         unsubscribeFrom: unsubscribeFromMutation,
     })
-})
+});

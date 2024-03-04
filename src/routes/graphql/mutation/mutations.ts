@@ -3,7 +3,7 @@ import { GraphQLNonNull } from 'graphql/index.js';
 import { UUIDType } from '../types/uuid.js';
 import { ChangePostType, CreatePostType, PostType } from '../types/post.js';
 import { ChangeUserType, CreateUserType, UserType } from '../types/user.js';
-import { CreateProfileType, ProfileType } from '../types/profile.js';
+import {ChangeProfileType, CreateProfileType, ProfileType} from '../types/profile.js';
 import { IContext } from '../interface/context.interface.js';
 import { IChangeUser, ISubscribeTo, IUnsubscribeFrom, IUser } from '../interface/user.interface.js';
 import { IChangeProfile, IProfile } from '../interface/profile.interface.js';
@@ -120,7 +120,7 @@ export const changeProfileMutation = {
     args: {
         id: { type: new GraphQLNonNull(UUIDType) },
         dto: {
-            type: new GraphQLNonNull(ChangePostType),
+            type: new GraphQLNonNull(ChangeProfileType),
         },
     },
     resolve: async (source: any, args: IChangeProfile, context: IContext) => {
